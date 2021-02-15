@@ -5,6 +5,8 @@ const path = require('path');
 const db = require('../db/db');
 
 const userRouter = require('../routers/userRouter');
+const fileRouter = require('../routers/fileRouter');
+const groupRouter = require('../routers/groupRouter');
 
 const app = express();
 app.use(express.json());
@@ -12,6 +14,8 @@ app.use(express.json());
 
 //routers
 app.use(userRouter);
+app.use(fileRouter);
+app.use(groupRouter);
 
 
 //path to public folder
@@ -21,14 +25,14 @@ const static_path = path.join(__dirname, '../public/')
 app.use(express.static(static_path));
 
 //path to files
-const files = path.join(__dirname,'../storage')
+const files = path.join(__dirname, '../storage')
 
 //API endpoint for list dir
-app.get('/files',(req,res)=>{
-    fs.readdir(files,(err,fileList)=>{
+app.get('/files', (req, res) => {
+    fs.readdir(files, (err, fileList) => {
         res.send(fileList);
     })
-    
+
 });
 
 
