@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 var validator = require('validator');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -32,25 +33,40 @@ const userSchema = new mongoose.Schema({
     rating:{
         type : Number,
         required :true
-    }
+    },
+    tokens:[{
+        token:{
+            type : String,
+            required : true
+        }
+    }]
 
 })
 
 userSchema.pre('save',async function(next){
     const user = this;
-    user.password = await bcrypt.hash(user.password,8);
+    if(user.isModified('password')){
+        user.password = await bcrypt.hash(user.password,8);
+    }
     next();
 })
 
+userSchema.methods.genorateAuthToken = async function(){
+    const user= this;
+    const token = jwt.sign({_id:user._id.toString()},'blZuyy6LdenIikI0p8xK');
+    user.tokens =  user.tokens.concat({token});
+    console.log(user.tokens)
+    await user.save();
+    return token;
+}
 
 userSchema.statics.findByCredentials = async function(userEmail,userPassword){
     const User = await user.findOne({'email':userEmail});
-
+    
     if(!User){
         throw new Error('unable to find user');
     }
     const isMatch = await bcrypt.compare(userPassword,User.password);
-    console.log(isMatch);
 
     if(!isMatch){
         throw new Error('unable to lgin');

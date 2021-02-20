@@ -4,24 +4,31 @@ const { model, isValidObjectId } = require('mongoose');
 const userModel = require('../models/userModel')
 const router = new express.Router();
 
-router.post('/register',(req,res)=>{
-    const user = new userModel( {
-    name:req.body.name,
-    email:req.body.email,
-    password:req.body.password,
-    hub:req.body.hub,
-    phone:req.body.phone,
-    rating:req.body.rating
-})
+router.post('/register',async (req,res)=>{
+    const user = new userModel(req.body);
+    console.log(user.password)
 
-user.save().then(()=>{
-    res.send('done');
-})
+    try {
+        await user.save();
+        const token = await user.genorateAuthToken();
+        res.status(201).send({user,token});
+    } catch (error) {
+        res.status(401).send(error)
+    }
 })
 
 router.post('/login',async (req,res)=>{
-    const User = await userModel.findByCredentials(req.body.email,req.body.password);
-    res.send(User);
+    try {
+        const User = await userModel.findByCredentials(req.body.email,req.body.password);
+        const token = User.genorateAuthToken();
+        res.send({
+            user: User,
+            token:token
+        });
+    } catch (error) {
+        res.status(400).send()
+    }
+    
 })
 
 router.patch('/user/update',async (req,res)=>{
