@@ -6,6 +6,11 @@ const fileSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    publicStat: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     path: {
         type: String,
         required: true,
