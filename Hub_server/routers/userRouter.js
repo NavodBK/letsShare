@@ -2,11 +2,11 @@ const express = require('express');
 const { model, isValidObjectId } = require('mongoose');
 
 const userModel = require('../models/userModel')
+const auth = require('../middlewares/auth')
 const router = new express.Router();
 
 router.post('/register',async (req,res)=>{
     const user = new userModel(req.body);
-    console.log(user.password)
 
     try {
         await user.save();
@@ -20,7 +20,7 @@ router.post('/register',async (req,res)=>{
 router.post('/login',async (req,res)=>{
     try {
         const User = await userModel.findByCredentials(req.body.email,req.body.password);
-        const token = User.genorateAuthToken();
+        const token = await User.genorateAuthToken();
         res.send({
             user: User,
             token:token
@@ -31,10 +31,31 @@ router.post('/login',async (req,res)=>{
     
 })
 
-router.patch('/user/update',async (req,res)=>{
-    console.log(req.body)
+router.post('/users/logout',auth,async(req,res)=>{
+    try {
+        req.user.tokens = req.user.tokens.filter((token)=>{
+            return token.token !== req.token
+        })
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()  
+    }
+})
+
+router.post('/users/logoutAll',auth,async(req,res)=>{
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()  
+    }
+})
+
+router.patch('/user/update',auth,async (req,res)=>{
     try{
-        const User = await userModel.findByIdAndUpdate(req.body.id,{
+        const User = await userModel.findByIdAndUpdate(req.user._id,{
             name:req.body.name,
             email:req.body.email,
             phone:req.body.phone,
@@ -42,20 +63,22 @@ router.patch('/user/update',async (req,res)=>{
         await User.save();
         res.send(User);
     }catch(e){
-        console.log(e)
         res.send(e);
     }
     
 })
 
-router.get('/user/delete',async(req,res)=>{
-    const User = await userModel.findByIdAndRemove(req.body.id)
-    res.send(User);
+router.get('/user/delete',auth,async(req,res)=>{
+    try{
+        await req.user.remove()
+        res.send(req.user);
+    }catch(e){
+        res.status(500).send()
+    }
 })
 
-router.get('/user',async(req,res)=>{
-    const User = await userModel.find(req.query.id)
-    res.send(User);
+router.get('/user/me',auth,async(req,res)=>{
+    res.send(req.user)
 })
 
 module.exports = router

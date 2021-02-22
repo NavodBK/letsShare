@@ -19,8 +19,9 @@ const fileSchema = new mongoose.Schema({
         required: true
     },
     owner: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'user'
     },
     size: {
         type: Number,

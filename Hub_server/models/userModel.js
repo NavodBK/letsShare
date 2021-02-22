@@ -43,6 +43,18 @@ const userSchema = new mongoose.Schema({
 
 })
 
+userSchema.virtual('files',{
+    ref:'file',
+    localField :'_id',
+    foreignField : 'owner'
+})
+
+userSchema.virtual('groups',{
+    ref:'group',
+    localField :'_id',
+    foreignField : 'users.user'
+})
+
 userSchema.pre('save',async function(next){
     const user = this;
     if(user.isModified('password')){
@@ -51,11 +63,20 @@ userSchema.pre('save',async function(next){
     next();
 })
 
+userSchema.methods.toJSON = function(){
+    const user = this;
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens
+
+    return userObject;
+}
+
 userSchema.methods.genorateAuthToken = async function(){
     const user= this;
     const token = jwt.sign({_id:user._id.toString()},'blZuyy6LdenIikI0p8xK');
     user.tokens =  user.tokens.concat({token});
-    console.log(user.tokens)
     await user.save();
     return token;
 }

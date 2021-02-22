@@ -5,7 +5,7 @@ const groupModel = require('../models/groupModel');
 const router = new express.Router();
 
 router.get('/groups',(req,res)=>{
-    const groups = groupModel.find({});
+    const groups = groupModel.find({publicStat :true});
     res.send(groups);
 })
 

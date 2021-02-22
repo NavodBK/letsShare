@@ -8,20 +8,28 @@ const groupSchema = new mongoose.Schema({
     },
     publicStat:{
         type : Boolean,
-        required :true
+        required :true,
+        default: true
     },
     admin:{
-        type : String,
-        required :true
+        type : mongoose.Schema.Types.ObjectId,
+        required :true,
+        ref:'user'
     },
-    requests:{
-        type : Number,
-        required :true
-    },
-    users:{
-        type : [String],
-        required :true
-    }
+    requests:[{
+        request:{
+            type : mongoose.Schema.Types.ObjectId,
+            required:true,
+            ref:'user',
+        }
+    }],
+    users:[{
+        User:{
+            type : mongoose.Schema.Types.ObjectId,
+            ref:'user',
+            required :true
+        }
+    }]
 
 })
 
