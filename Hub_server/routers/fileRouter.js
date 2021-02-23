@@ -51,3 +51,5 @@ router.post('/files/add', auth, (req, res) => {
 router.post('/files/remove', auth, (req, res) => {
 
 })
+
+module.exports = router

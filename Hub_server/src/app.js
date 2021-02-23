@@ -14,8 +14,8 @@ app.use(express.json());
 
 //routers
 app.use(userRouter);
-// app.use(fileRouter);
-// app.use(groupRouter);
+app.use(fileRouter);
+app.use(groupRouter);
 
 
 //path to public folder

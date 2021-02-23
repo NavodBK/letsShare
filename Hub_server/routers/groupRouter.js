@@ -1,5 +1,6 @@
 const express = require('express');
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/auth');
+const group = require('../models/groupModel');
 
 const groupModel = require('../models/groupModel');
 
@@ -21,7 +22,7 @@ router.post('/groups/create', auth, (req, res) => {
     })
 })
 
-router.post('/groups/delete', (req, res) => {
+router.post('/groups/delete', auth,(req, res) => {
     try {
         const group = groupModel.findOneAndDelete({ _id: req.body.id, admin: req.user._id });
         res.send(group);
@@ -31,13 +32,24 @@ router.post('/groups/delete', (req, res) => {
 
 })
 
+router.get('/group/:id',auth,(req,res)=>{
+    
+})
 
-router.post('/groups/add', (req, res) => {
+router.post('/groups/addMember',auth, (req, res) => {
+    const groupId = req.body.groupId;
+    const group = groupModel.findOne({id:groupId});
+    const member = req.body.member.id;
+    if(group.ifAdmin(req.user._id,groupId)){
+        group.users = group.users.concat({member})
+        res.send(member)
+    }else{
+        res.status(401).send();
+    }
+})
+
+router.post('/groups/removeMember',auth, (req, res) => {
 
 })
 
-router.post('/groups/remove', (req, res) => {
-
-})
-
-
+module.exports = router
