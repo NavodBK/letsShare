@@ -26,7 +26,7 @@ router.post('/login',async (req,res)=>{
             token:token
         });
     } catch (error) {
-        res.status(400).send()
+        res.status(401).send("invalid Login Data")
     }
     
 })
