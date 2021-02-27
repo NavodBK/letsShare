@@ -1,9 +1,15 @@
 const { app, BrowserWindow,dialog,ipcMain, remote } = require('electron')
 const path  = require('path')
+const axios = require('axios');
 
 var token;
 var window;
 
+axiosConfig = {
+  headers:{
+    Authorization: "Bearer " + token
+  }
+}
 
 //main windoe create
 function createWindow () {
@@ -42,12 +48,13 @@ app.on('activate', () => {
   }
 }) 
 
-//login 
+//login:pass
 ipcMain.on('login:token',(eve,args)=>{
   token = args;
   window.loadFile('src/files.html')
 })
 
+//login:failed
 ipcMain.on('login:failed',(eve,args)=>{
   if(args==401){
     dialog.showMessageBox({
@@ -59,3 +66,21 @@ ipcMain.on('login:failed',(eve,args)=>{
   }
 })
 
+//login:register
+ipcMain.on('login:register',()=>{
+  window.loadFile('src/register.html')
+})
+
+//login:forgot
+ipcMain.on('login:forgot',()=>{
+  window.loadFile('src/forgot.html')
+})
+
+ipcMain.handle('filelist:send',async ()=>{
+  console.log("handle fired")
+  const files = await axios.get('http://127.0.0.1:3000/files',axiosConfig)
+  .then((res)=>{
+    console.log(res.data)
+    return res.data;
+  })
+})

@@ -3,8 +3,9 @@ const { Main } = require('electron');
 const electron = require('electron');
 const {ipcRenderer}  =electron;
 
-var submitBtn = document.getElementById('submit');
 
+//login
+var submitBtn = document.getElementById('submit');
 submitBtn.addEventListener("click", function() {
     var userName = document.getElementById('un');
     var pw = document.getElementById('pass');
@@ -26,7 +27,14 @@ submitBtn.addEventListener("click", function() {
     
   });
 
+//register button
 var regBtn = document.getElementById('register') 
 regBtn.addEventListener("click",function(){
     ipcRenderer.send('login:register')
+})
+
+//forgot button
+var forgotBtn = document.getElementById('forgot')
+forgotBtn.addEventListener('click',function(){
+    ipcRenderer.send('login:forgot')
 })
