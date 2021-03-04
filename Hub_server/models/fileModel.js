@@ -32,14 +32,18 @@ const fileSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    categories: {
-        type: [String],
-        required: true
-    },
-    groups: {
-        type: [String],
-        required: true
-    }
+    categories:[{
+        category :{
+            type: [String],
+            required: true
+        }
+    }],
+    groups: [{
+        group:{
+            type: [String],
+            required: true
+        }
+    }]
 
 })
 

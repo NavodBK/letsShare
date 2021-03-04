@@ -76,11 +76,7 @@ ipcMain.on('login:forgot',()=>{
   window.loadFile('src/forgot.html')
 })
 
-ipcMain.handle('filelist:send',async ()=>{
-  console.log("handle fired")
-  const files = await axios.get('http://127.0.0.1:3000/files',axiosConfig)
-  .then((res)=>{
-    console.log(res.data)
-    return res.data;
-  })
+ipcMain.handle('my-invokable-ipc', async (event, ...args) => {
+  const result = 2+1
+  return result
 })

@@ -3,7 +3,8 @@ const multer = require('multer');
 const path = require('path')
 
 const fileModel = require('../models/fileModel');
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/auth');
+const report = require('../models/ReportsModel')
 
 const router = new express.Router();
 
@@ -56,16 +57,34 @@ router.post('/files/upload', [auth,upload.single('file')], async (req, res) => {
 })
 
 router.get('/files/download/:id', auth,async (req, res) => {
-    serveFile = await fileModel.findById(req.params.id)
-    serveFilePath = serveFile.path
-    serveFile.downloads = serveFile.downloads +1;
-    serveFile.save()
-    res.sendFile(serveFilePath);
+    try {
+        serveFile = await fileModel.findById(req.params.id)
+        if(!serveFile){
+            res.status(404).send('File not found')
+        }else{
+            serveFilePath = serveFile.path
+            serveFile.downloads = serveFile.downloads +1;
+            serveFile.save()
+            res.sendFile(serveFilePath);
+        }
+    } catch (error) {
+        res.send(error)
+    }
+   
+   
 })
 
 router.delete('/files/delete/:id', auth, (req, res) => {
-    const _id = req.params._id;
-    fileModel.findOneAndDelete({ _id, owner: req.user._id })
+
+    const _id = req.params.id;
+    fileModel.findOneAndDelete({ id: id, owner: req.user.id },function(err,docs){
+        if(err){
+            res.status(500).send(err)
+        }else{
+            res.send(docs)
+        }
+    })
+   
 })
 
 router.get('/files/request/:id', auth, (req, res) => {
@@ -97,7 +116,11 @@ router.post('/files/downvote', auth,async (req, res) => {
 })
 
 router.post('/files/report', auth, (req, res) => {
-
+   const newReport = new report({
+    file: req.body.file,
+    desc: req.body.desc,
+    reporter: req.user.id,
+   })
 })
 
 router.post('/files/add', auth, (req, res) => {
