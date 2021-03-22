@@ -1,10 +1,18 @@
+const { default: axios } = require('axios');
 const electron = require('electron');
 const {ipcRenderer}  =electron;
 
 window.onload = async ()=>{
-    async () => {
-        const result = await ipcRenderer.invoke('my-invokable-ipc', arg1, arg2)
-        console.log(result)
-    }
+   
 }
 
+window.addEventListener('load',async function () {
+    ipcRenderer.send('token:get')
+  })
+
+ipcRenderer.on('token:send', (event, res) => {
+    console.log(res)
+    axios.get('http://127.0.0.1:3000/files').then(function (response) {
+        console.log(response);
+      })
+})

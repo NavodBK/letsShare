@@ -75,8 +75,7 @@ ipcMain.on('login:register',()=>{
 ipcMain.on('login:forgot',()=>{
   window.loadFile('src/forgot.html')
 })
-
-ipcMain.handle('my-invokable-ipc', async (event, ...args) => {
-  const result = 2+1
-  return result
+ipcMain.on('token:get', (event) => {
+  var res = token;
+  event.sender.send('token:send', res)
 })

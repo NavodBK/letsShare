@@ -39,12 +39,12 @@ const fileSchema = new mongoose.Schema({
         }
     }],
     groups: [{
-        group:{
-            type: [String],
-            required: true
+        group :{
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'group'
         }
     }]
-
 })
 
 
