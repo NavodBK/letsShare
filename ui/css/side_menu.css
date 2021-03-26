@@ -11,26 +11,63 @@ body {
     left: 0;
     background-color: rgb(31, 5, 39);
     overflow-x: hidden;
-    padding-top: 20px;
+    padding-top: 0px;
   }
   
-  .sidenav a {
-    padding: 6px 6px 6px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
+  #side-header{
+    background-color: rgb(22, 3, 27);
+    color: aliceblue;
+    text-align: center;
+    border-bottom: 2px solid rgb(44, 23, 65);
+    padding: 10px;
   }
-  
-  .sidenav a:hover {
-    color: #f1f1f1;
+
+  .side-tab{
+    color: rgb(223, 205, 205);
+    padding: 5px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    border-bottom: 2px solid rgb(9, 32, 53);
+    transition: 0.4s;
   }
-  
+
+  .side-tab:hover{
+    background-color: rgb(44, 23, 65);
+  }
+
+  .sidenav .private-ico{
+    height: 1.5rem;
+  }
+  .side-tab p{
+    margin-left: 10px;
+    padding-top: 22px;
+  }
+
   .main {
     margin-left: 200px; /* Same as the width of the sidenav */
   }
-  
+
+  .main #page-header{
+    width: 100%;
+    background-color: rgb(239, 234, 247);
+    text-align: center;
+    padding: 5px;
+  }
+
+  #body-files{
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 100%;
+  }
+
+  #body-files .card{
+    margin: 10px;
+  }
+
   @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
   }
