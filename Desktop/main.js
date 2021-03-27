@@ -75,6 +75,8 @@ ipcMain.on('login:register',()=>{
 ipcMain.on('login:forgot',()=>{
   window.loadFile('src/forgot.html')
 })
+
+
 ipcMain.on('token:get', (event) => {
   var res = token;
   event.sender.send('token:send', res)
