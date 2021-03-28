@@ -25,11 +25,11 @@ ipcRenderer.on('token:send', (event, res) => {
                           '<p class="card-text">Owner : '+response.data[i].owner+'</p>'+
                           '<p class="card-text">Rating : '+response.data[i].rating+'</p>'+
                           '<p class="card-text">Downloads : '+response.data[i].downloads+'</p>'+
-                          '<p onclick="download('+response.data[i]._id+')" class="btn btn-primary">Download</p>'+
+                          '<p onclick="download(\'' + response.data[i]._id + '\')" class="btn btn-primary">Download</p>'+
                         '</div>'+
                       '</div>';
         }
-        console.log(response.data[i]._id)
+        console.log(response.data)
         body_files.innerHTML = fileData;
       })
 })
@@ -37,7 +37,8 @@ ipcRenderer.on('token:send', (event, res) => {
 
 //download file function
 function download(id){
-  console.log("download")
+  console.log(id)
+  console.log(url+'/files/download/'+id)
   axios.get(url+'/files/download/'+id, {
   headers: {
     'Authorization': 'Bearer '+token 
