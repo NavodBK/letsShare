@@ -1,10 +1,12 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path')
+const fs = require('fs')
 
 const fileModel = require('../models/fileModel');
 const auth = require('../middlewares/auth');
-const report = require('../models/ReportsModel')
+const report = require('../models/ReportsModel');
+var mongoose = require('mongoose');
 
 const router = new express.Router();
 
@@ -77,11 +79,17 @@ router.get('/files/download/:id', auth,async (req, res) => {
 router.delete('/files/delete/:id', auth, (req, res) => {
 
     const _id = req.params.id;
-    fileModel.findOneAndDelete({ id: id, owner: req.user.id },function(err,docs){
+    fileModel.findOneAndDelete({ id: _id, owner: req.user.id },function(err,doc){
         if(err){
             res.status(500).send(err)
         }else{
-            res.send(docs)
+            // try {
+            //     fs.unlinkSync()
+            //   } catch(err) {
+            //     console.error(err)
+            //   }
+            console.log(doc)
+            res.send(doc)
         }
     })
    
@@ -123,8 +131,19 @@ router.post('/files/report', auth, (req, res) => {
    })
 })
 
-router.post('/files/add', auth, (req, res) => {
-
+router.post('/files/add', auth, async(req, res) => {
+    try {
+        thisFile = await fileModel.findOne({_id:req.body.fileId})
+        thisGroup = mongoose.Types.ObjectId(req.body.groupId)
+        console.log(thisFile)
+        thisFile.groups = thisFile.groups.concat({group:thisGroup})
+        thisFile.save()
+        res.send(thisFile.groups)
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
+    
 })
 
 router.post('/files/remove', auth, (req, res) => {

@@ -33,14 +33,6 @@ const groupSchema = new mongoose.Schema({
 
 })
 
-groupSchema.methods.ifAdmin = async(userid,groupId)=>{
-    const group = this;
-    const thisGroup = await group.findOne({_id:groupId})
-    if(!thisGroup.admin == userid){
-        throw new Error('You are not the admin of this group')
-    }
-    return group.admin;
-}
 
 const group = mongoose.model('group',groupSchema);
 

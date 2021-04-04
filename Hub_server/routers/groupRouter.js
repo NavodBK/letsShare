@@ -1,25 +1,33 @@
 const express = require('express');
+var mongoose = require('mongoose');
+
 const auth = require('../middlewares/auth');
-const group = require('../models/groupModel');
 
 const groupModel = require('../models/groupModel');
+const fileModel = require('../models/fileModel');
 
 const router = new express.Router();
 
-router.get('/groups', auth, (req, res) => {
-    const groups = groupModel.find({ publicStat: true });
+router.get('/groups', auth, async (req, res) => {
+    const groups = await groupModel.find({ publicStat: true });
     res.send(groups);
 })
 
 router.post('/groups/create', auth, (req, res) => {
-    const group = groupModel({
+    console.log(req.user)
+    const group = new groupModel({
         name: req.body.name,
         publicStat: req.body.publicStat,
         admin: req.user._id,
     })
-    group.save().then(() => {
-        res.send(group)
-    })
+    try {
+        group.save().then(() => {
+            res.send(group)
+        })
+    } catch (error) {
+        console.log(error)
+    }
+    
 })
 
 router.post('/groups/delete', auth,(req, res) => {
@@ -32,19 +40,41 @@ router.post('/groups/delete', auth,(req, res) => {
 
 })
 
-router.get('/group/:id',auth,(req,res)=>{
-    
+router.get('/groups/my',auth,async(req,res)=>{
+    console.log(req.user._id);
+    groups = await groupModel.find({'users.User':req.user._id})
+    res.send(groups)
 })
 
-router.post('/groups/addMember',auth, (req, res) => {
+router.get('/group/:id',auth,async(req,res)=>{
+    try {
+        const thisGroup = await groupModel.findOne({_id : req.params.id , "users.User":req.user._id })
+        const files = await fileModel.find({"groups.group":req.params.id})
+        res.send(files);
+    } catch (error) {
+        res.status(401).send({"error":"You are not a member of this group"})
+    }
+     
+})
+
+router.post('/groups/addMember',auth, async (req, res) => {
     const groupId = req.body.groupId;
-    const group = groupModel.findOne({id:groupId});
-    const member = req.body.member.id;
-    if(group.ifAdmin(req.user._id,groupId)){
-        group.users = group.users.concat({member})
-        res.send(member)
-    }else{
-        res.status(401).send();
+    const group = await groupModel.findOne({_id:groupId});
+    const memberId = req.body.memberId;
+    console.log(group.admin)
+    console.log(req.user._id)
+    console.log(group.admin === req.user._id)
+    try {
+        if (group.admin.toString().trim() == req.user._id.toString().trim()) {
+            member= mongoose.Types.ObjectId(memberId)
+            group.users = group.users.concat({User:member})
+            group.save()
+            res.status(200).send(group.users)
+        } else {
+            res.status(401).send()
+        }
+    } catch (error) {
+        console.log(error)
     }
 })
 
