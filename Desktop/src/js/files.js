@@ -15,7 +15,7 @@ ipcRenderer.on('token:send', (event, res) => {
     console.log(res)
     token=res;
     axios.get(url+'/files').then(function (response) {
-        renderFiles(response.data,"Public")        
+        renderFiles(response.data,"Public",0)        
       })
     axios.get(url+'/groups/my',{
       headers: {
@@ -23,7 +23,6 @@ ipcRenderer.on('token:send', (event, res) => {
       }
     }).then(function(response){
       var groupList ="";
-      console.log(response)
       for(var i = 0; i < Object.keys(response.data).length ; i++){
         groupList += '<div class="side-tab" onclick="getGroupFiles(\''+response.data[i]._id+'\','+ '\''+response.data[i].name+'\')">'+
                         '<img src="../assets/img/lock.jpg" class="private-ico">'+
@@ -36,26 +35,44 @@ ipcRenderer.on('token:send', (event, res) => {
 })
 
 //render the files
-function renderFiles(filesArr,groupName){
+function renderFiles(filesArr,groupName,groupId){
 
   pageHeader = document.getElementById("page-header")
-  pageHeader.innerHTML = '<h3>'+ groupName +' : Files </h3>'
-  console.log(groupName)
+  if(groupId==0){
+    headerHtml = '<h3>'+ groupName +' : Files </h3>'
+  }else{
+    headerHtml = '<h3>'+ groupName +' : Files </h3>'+
+    '<button type="button" id="settingsBtn" class="btn btn-info"'+
+    ' onclick="openSettings(\''+groupId+'\')">Group settings</button>'
+  }
+  pageHeader.innerHTML = headerHtml
   const body_files = document.getElementById('body-files');
   var fileData = '';
 
-  for(var i = 0; i < Object.keys(filesArr).length ; i++){
-    fileData += '<div class="card text-left" style="width: 18rem;">'+
-                  '<div class="card-body">'+
-                    '<h5 class="card-title">'+filesArr[i].name+'</h5>'+
-                    '<p class="card-text">Owner : '+filesArr[i].owner+'</p>'+
-                    '<p class="card-text">Rating : '+filesArr[i].rating+'</p>'+
-                    '<p class="card-text">Downloads : '+filesArr[i].downloads+'</p>'+
-                    '<p onclick="download(\'' + filesArr[i]._id + '\',\'' + String(filesArr[i].name) + '\')" class="btn btn-primary">Download</p>'+
-                    '</div>'+
-                '</div>';
+  if(filesArr.length == 0){
+    body_files.innerHTML = "<h2>The group is empty</h2>"
+  }else{
+    for(var i = 0; i < Object.keys(filesArr).length ; i++){
+      fileData += '<div class="card text-left" style="width: 18rem;">'+
+                    '<div class="card-body">'+
+                      '<h5 class="card-title">'+filesArr[i].name+'</h5>'+
+                      '<p class="card-text">Owner : '+filesArr[i].owner+'</p>'+                    
+                      '<div class="ratings">'+
+                      '<p>Rating : '+filesArr[i].rating+'</p>'+
+                      '<div>'+
+                      '<img class="voteImg" src="../assets/img/up.png" onclick="vote(\'' + filesArr[i]._id + '\',\'u\')"></img> '+
+                      '<img class="voteImg" src="../assets/img/down.png" onclick="vote(\'' + filesArr[i]._id + '\',\'d\')"></img>'+
+                      '</div>'+
+                      '</div>'+
+                      '<p class="card-text">Downloads : '+filesArr[i].downloads+'</p>'+                    
+                      '<p onclick="download(\'' + filesArr[i]._id + '\',\'' + String(filesArr[i].name) + '\')" class="btn btn-primary">Download</p>'+
+                      '</div>'+
+                  '</div>';
+    }
+    body_files.innerHTML = fileData;
   }
-  body_files.innerHTML = fileData;
+
+  
 }
 
 //get files related to the group
@@ -72,13 +89,7 @@ function getGroupFiles(groupId,groupName){
     }
     })
     .then((res) => {
-      if(!res.data.length ==0){
-        renderFiles(res.data,groupName)
-      }else{
-        const body_files = document.getElementById('body-files');
-        body_files.innerHTML = "<h2> the group is empty</h2>";
-      }
-      
+        renderFiles(res.data,groupName,groupId)      
     })
     .catch((error) => {
       console.error(error)
@@ -95,6 +106,7 @@ function download(id,filename){
   })
   .then((res) => {
     fileDownload(res.data, filename);
+    ipcRenderer.send('files:refresh')
   })
   .catch((error) => {
     console.error(error)
@@ -102,23 +114,40 @@ function download(id,filename){
 }
 
 //VoteFile
-function upvote(id,upOrDown){
+function vote(id,upOrDown){
   if(upOrDown == "u"){
     thisUrl = url+'/files/upvote'
   }else{
-    thisUrl = url+"/files/downvote"
+    thisUrl = url+'/files/downvote'
   }
-  axios.post(thisUrl, {
-    headers: {
+  axios.post(thisUrl,{'id':id }, {headers:
+    {
       'Authorization': 'Bearer '+token 
-    },data:{
-      "id":id
     }
-    })
+  })
     .then((res) => {
       console.log(res)
+      ipcRenderer.send('files:refresh')
     })
     .catch((error) => {
       console.error(error)
     })
+}
+
+//group settings
+function openSettings(groupId){
+  ipcRenderer.send("settings:open",groupId)
+}
+
+//logout user
+function logout(){
+  axios.post(url+'/users/logout',{'id':"id "},{
+    headers:
+    {
+      'Authorization': 'Bearer '+token 
+    }
+  }).then((res)=>{
+    ipcRenderer.send('user:logout')
+    console.log(res)
+  })
 }

@@ -76,8 +76,27 @@ ipcMain.on('login:forgot',()=>{
   window.loadFile('src/forgot.html')
 })
 
-
+//send the token
 ipcMain.on('token:get', (event) => {
   var res = token;
   event.sender.send('token:send', res)
+})
+
+//Change screen on logout
+ipcMain.on('user:logout',()=>{
+  window.loadFile('src/index.html')
+})
+
+//refresh the files.html
+ipcMain.on("files:refresh",()=>{
+  window.loadFile('src/files.html')
+})
+
+ipcMain.on("settings:open",(event,groupId)=>{
+  console.log(groupId)
+  const settingsWin = new BrowserWindow({ width: 800, height: 600 })
+  settingsWin.removeMenu();
+  // Or load a local HTML file
+  settingsWin.loadFile('src/index.html')
+
 })

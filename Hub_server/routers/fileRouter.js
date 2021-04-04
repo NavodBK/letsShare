@@ -100,6 +100,7 @@ router.get('/files/request/:id', auth, (req, res) => {
 })
 
 router.post('/files/upvote', auth,async (req, res) => {
+    console.log(req)
     try {
         const voteFile = await fileModel.findById(req.body.id)
         voteFile.rating = voteFile.rating + 1 

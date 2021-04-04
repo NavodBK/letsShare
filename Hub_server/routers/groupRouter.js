@@ -5,6 +5,7 @@ const auth = require('../middlewares/auth');
 
 const groupModel = require('../models/groupModel');
 const fileModel = require('../models/fileModel');
+const { Router } = require('express');
 
 const router = new express.Router();
 
@@ -14,7 +15,7 @@ router.get('/groups', auth, async (req, res) => {
 })
 
 router.post('/groups/create', auth, (req, res) => {
-    console.log(req.user)
+    console.log(req)
     const group = new groupModel({
         name: req.body.name,
         publicStat: req.body.publicStat,
@@ -41,9 +42,23 @@ router.post('/groups/delete', auth,(req, res) => {
 })
 
 router.get('/groups/my',auth,async(req,res)=>{
-    console.log(req.user._id);
-    groups = await groupModel.find({'users.User':req.user._id})
-    res.send(groups)
+    try {
+        groups = await groupModel.find({'users.User':req.user._id})
+        res.send(groups)
+    } catch (error) {
+        res.status(501).send()
+    }
+  
+})
+
+router.get('/groups/admin/me/:id',auth,async(req,res)=>{
+    try {
+        groups = await groupModel.find({admin:req.params.id})
+        res.send(groups)
+    } catch (error) {
+        console.error();
+        res.send(error)
+    }
 })
 
 router.get('/group/:id',auth,async(req,res)=>{
