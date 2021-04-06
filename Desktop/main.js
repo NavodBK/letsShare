@@ -5,6 +5,7 @@ const axios = require('axios');
 var token;
 var window;
 
+var groupIdForExchange;
 axiosConfig = {
   headers:{
     Authorization: "Bearer " + token
@@ -92,11 +93,18 @@ ipcMain.on("files:refresh",()=>{
   window.loadFile('src/files.html')
 })
 
+//group settings
 ipcMain.on("settings:open",(event,groupId)=>{
-  console.log(groupId)
-  const settingsWin = new BrowserWindow({ width: 800, height: 600 })
+  const settingsWin = new BrowserWindow({ width: 600, height: 900 ,webPreferences: {
+    nodeIntegration: true
+  }})
+  groupIdForExchange = groupId;
   settingsWin.removeMenu();
-  // Or load a local HTML file
-  settingsWin.loadFile('src/index.html')
+  settingsWin.webContents.openDevTools()
+  settingsWin.loadFile('src/groupSettings.html')
+})
 
+//send the group Id to the new window
+ipcMain.on('groupId:get', (event) => {
+  event.sender.send('groupId:send', groupIdForExchange)
 })

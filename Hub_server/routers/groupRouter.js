@@ -14,6 +14,17 @@ router.get('/groups', auth, async (req, res) => {
     res.send(groups);
 })
 
+router.get('/group/details/:id',auth,async (req,res)=>{
+    try {
+        thisGroup = await groupModel.findOne({_id:req.params.id})
+        res.send(thisGroup)
+    } catch (error) {
+        console.error();
+    }
+    
+
+})
+
 router.post('/groups/create', auth, (req, res) => {
     console.log(req)
     const group = new groupModel({
@@ -31,9 +42,9 @@ router.post('/groups/create', auth, (req, res) => {
     
 })
 
-router.post('/groups/delete', auth,(req, res) => {
+router.post('/groups/delete', auth,async (req, res) => {
     try {
-        const group = groupModel.findOneAndDelete({ _id: req.body.id, admin: req.user._id });
+        const group = await groupModel.findOneAndDelete({ _id: req.body.id, admin: req.user._id });
         res.send(group);
     } catch (error) {
         res.status(404).send(error);
@@ -96,5 +107,9 @@ router.post('/groups/addMember',auth, async (req, res) => {
 router.post('/groups/removeMember',auth, (req, res) => {
 
 })
+
+function isInGroup(){
+    
+}
 
 module.exports = router
