@@ -1,5 +1,14 @@
 #headerDiv{
+    padding: 20px 50px 80px 20px;
     width: 100%;
     height: 150px;
-    background-color: aqua;
+    background-color: rgb(44, 23, 65);
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    color: aquamarine;
+}
+
+#headerDiv h1 h3{
+    margin: 5px;                                                                                                                         
 }

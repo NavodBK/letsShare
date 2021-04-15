@@ -5,6 +5,7 @@ const auth = require('../middlewares/auth');
 
 const groupModel = require('../models/groupModel');
 const fileModel = require('../models/fileModel');
+const user = require('../models/userModel');
 const { Router } = require('express');
 
 const router = new express.Router();
@@ -16,7 +17,12 @@ router.get('/groups', auth, async (req, res) => {
 
 router.get('/group/details/:id',auth,async (req,res)=>{
     try {
-        thisGroup = await groupModel.findOne({_id:req.params.id})
+        thisGroup = await (await groupModel.findOne({_id:req.params.id}))
+        files = await fileModel.find({'groups.group':req.params.id})
+        thisGroup ={
+            thisGroup, files
+        }
+        console.log(thisGroup)
         res.send(thisGroup)
     } catch (error) {
         console.error();
@@ -83,6 +89,7 @@ router.get('/group/:id',auth,async(req,res)=>{
      
 })
 
+
 router.post('/groups/addMember',auth, async (req, res) => {
     const groupId = req.body.groupId;
     const group = await groupModel.findOne({_id:groupId});
@@ -108,8 +115,8 @@ router.post('/groups/removeMember',auth, (req, res) => {
 
 })
 
-function isInGroup(){
-    
+function isInGroup(groupId,memberId){
+    groupModel.findOne()
 }
 
 module.exports = router
