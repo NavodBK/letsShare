@@ -23,6 +23,7 @@ function createWindow () {
     }
   })
   prepareWindow(win)
+  win.maximize();
   win.show();
   win.loadFile('src/index.html')
   window = this.win
@@ -31,7 +32,7 @@ function createWindow () {
 //remove menu and prepare new window
 function prepareWindow(window){
   window.removeMenu();
-  window.maximize();
+
   window.webContents.openDevTools()
 }
 
@@ -107,4 +108,59 @@ ipcMain.on("settings:open",(event,groupId)=>{
 //send the group Id to the new window
 ipcMain.on('groupId:get', (event) => {
   event.sender.send('groupId:send', groupIdForExchange)
+})
+
+//file upload window
+ipcMain.on('fileUpload',async (eve,args)=>{
+  // filePath = await dialog.showOpenDialog({ properties: ['openFile'] })
+  // console.log(filePath.filePaths)
+
+  upWin = new BrowserWindow({
+    show: false,
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+  prepareWindow(upWin)
+  upWin.show();
+  upWin.loadFile('src/upload.html')
+  upWindow = this.upWin
+
+})
+
+
+//join or create group
+ipcMain.on('group:new/join',async(eve,args)=>{
+  upWin = new BrowserWindow({
+    show: false,
+    width: 800,
+    height: 300,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+  prepareWindow(upWin)
+  upWin.show();
+  upWin.loadFile('src/groupSelect.html')
+  upWindow = this.upWin
+})
+
+//open the relevent page to join or create group
+
+ipcMain.on('groups:join',async(eve,args)=>{
+  if (args=="Join") {
+    console.log(args)
+    window.loadFile('src/joinGroup.html')
+  } else {
+    console.log(args)
+    window.loadFile('src/createGroup.html')
+  }
+  upWin.close()
+})
+
+//go back to files
+ipcMain.on('joinGroup:back',async(eve,args)=>{
+  window.loadFile('src/files.html')
 })

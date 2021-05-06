@@ -125,11 +125,24 @@ router.post('/files/downvote', auth,async (req, res) => {
 })
 
 router.post('/files/report', auth, (req, res) => {
-   const newReport = new report({
-    file: req.body.file,
-    desc: req.body.desc,
-    reporter: req.user.id,
-   })
+    try {
+        const newReport = new report({
+            file: req.body.file,
+            desc: req.body.desc,
+            reporter: req.user.id,
+           })
+           if(!newReport.desc){
+               res.status(400).send()
+           }else{
+            newReport.save()
+            res.status(200).send()
+           }
+           
+           
+    } catch (error) {
+        res.status(400).send()
+    }
+   
 })
 
 router.post('/files/add', auth, async(req, res) => {

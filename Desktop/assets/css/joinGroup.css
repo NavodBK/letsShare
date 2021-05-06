@@ -1,0 +1,16 @@
+h2{
+    margin-top: 18px  !important;
+}
+
+#mainContainer{
+    margin-top: 20px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 100%;
+}
+
+#backBtn{
+    margin: 20px;
+}

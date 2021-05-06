@@ -1,0 +1,15 @@
+#mainContainer{
+    margin-top: 20px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 100%;
+}
+
+h2{
+    margin: 20px !important;
+}
+#backBtn{
+    margin: 20px;
+}

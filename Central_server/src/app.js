@@ -7,6 +7,10 @@ const db = require('../db/db');
 const app = express();
 app.use(express.json());
 
+const hubsRouter = require("../routers/hubsRouter")
+
+app.use(hubsRouter)
+
 //path to public folder
 const static_path = path.join(__dirname, '../public/')
 

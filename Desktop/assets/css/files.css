@@ -15,13 +15,35 @@ body {
   }
   
   #side-header{
+    width: 100%;
+    display: inline-flex;
     background-color: rgb(22, 3, 27);
     color: aliceblue;
     text-align: center;
     border-bottom: 2px solid rgb(44, 23, 65);
     padding: 10px;
   }
+ 
+  #side-header h5{
+    border: 1px solid white;
+    padding: 5px;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
 
+  #groupPlus{
+    position: fixed;
+    top: 10px;
+    left: 150px;
+    padding: 3px 8px 3px 8px;
+    border: none;
+    background-color:  rgb(22, 3, 27);
+    color: white;
+    border-radius: 50%;
+  }
+  #groupPlus:hover{
+    background-color:  rgb(44, 23, 65);
+  }
   .side-tab{
     color: rgb(223, 205, 205);
     padding: 5px;
@@ -115,3 +137,4 @@ body {
     bottom: 10px;
     right: 20px;
   }
+  

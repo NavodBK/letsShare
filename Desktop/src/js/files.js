@@ -60,6 +60,7 @@ function renderFiles(filesArr,groupName,groupId){
                       '<div class="ratings">'+
                       '<p>Rating : '+filesArr[i].rating+'</p>'+
                       '<div>'+
+                      '<img class="voteImg" src="../assets/img/report.png" onclick="report(\'' + filesArr[i]._id + '\',\'u\')" style="border-radius: 90% !important;"></img> '+
                       '<img class="voteImg" src="../assets/img/up.png" onclick="vote(\'' + filesArr[i]._id + '\',\'u\')"></img> '+
                       '<img class="voteImg" src="../assets/img/down.png" onclick="vote(\'' + filesArr[i]._id + '\',\'d\')"></img>'+
                       '</div>'+
@@ -73,6 +74,52 @@ function renderFiles(filesArr,groupName,groupId){
   }
 
   
+}
+
+//report
+function report(id) {
+const Dialogs = require('dialogs')
+const dialogs = Dialogs()
+
+      dialogs.prompt('Enter the description', ok => {
+        console.log(ok)
+        if (ok == "" || undefined) {
+          dialogs.alert('Enter the report description to submit a report', ok => {
+                
+          })
+        } else {
+          axios.post(url+"/files/report",{
+            'file':id,
+            'desc' :ok 
+          },
+          {
+            headers:
+            {
+              'Authorization': 'Bearer '+token 
+            }
+            })
+            .then((res) => {
+              console.log(res.status)
+              if(res.status == 200){
+                console.log(res)
+                dialogs.alert('Report submitted', ok => {
+                  console.log('alert', ok)
+                })
+              }else{
+                console.log(res)
+                dialogs.alert('Somthing went wrong! please try again later', ok => {
+                  
+                })
+              }
+              
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        }
+        
+      })
+    
 }
 
 //get files related to the group
@@ -151,3 +198,15 @@ function logout(){
     console.log(res)
   })
 }
+
+//file upload btn
+var submitBtn = document.getElementById('uploadBtn');
+submitBtn.addEventListener("click", function() {
+   ipcRenderer.send("fileUpload") 
+  });
+
+//new group
+var newGroupBtn = document.getElementById('groupPlus');
+newGroupBtn.addEventListener('click',function(){
+  ipcRenderer.send("group:new/join") 
+});

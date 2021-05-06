@@ -1,0 +1,25 @@
+
+html{
+    height: 100%;
+}
+
+body{
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 100%;
+}
+
+#mainContainer{
+    align-self: center;
+    margin: auto;
+    display: flex;
+}
+
+.item{
+    text-align: center;
+    padding: 50px;
+    margin: 50px;
+    width: 150px;
+}

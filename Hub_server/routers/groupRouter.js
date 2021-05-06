@@ -89,6 +89,20 @@ router.get('/group/:id',auth,async(req,res)=>{
      
 })
 
+router.post('/groups/join',auth,async(req,res)=>{
+    try {
+        const groupId = req.body.groupId;
+        const group = await groupModel.findOne({_id:groupId});
+        const memberId = req.user._id;
+        member= mongoose.Types.ObjectId(memberId)
+        group.users = group.users.concat({User:member})
+        group.save()
+        res.status(200).send(group.users)
+    } catch (error) {
+        res.send(error)
+    }
+   
+})
 
 router.post('/groups/addMember',auth, async (req, res) => {
     const groupId = req.body.groupId;
