@@ -19,8 +19,9 @@ router.get('/group/details/:id',auth,async (req,res)=>{
     try {
         thisGroup = await (await groupModel.findOne({_id:req.params.id}))
         files = await fileModel.find({'groups.group':req.params.id})
+        userId = req.user.id
         thisGroup ={
-            thisGroup, files
+            thisGroup, files,userId
         }
         console.log(thisGroup)
         res.send(thisGroup)
@@ -32,7 +33,6 @@ router.get('/group/details/:id',auth,async (req,res)=>{
 })
 
 router.post('/groups/create', auth, (req, res) => {
-    console.log(req)
     const group = new groupModel({
         name: req.body.name,
         publicStat: req.body.publicStat,
@@ -107,13 +107,12 @@ router.post('/groups/join',auth,async(req,res)=>{
 router.post('/groups/addMember',auth, async (req, res) => {
     const groupId = req.body.groupId;
     const group = await groupModel.findOne({_id:groupId});
-    const memberId = req.body.memberId;
-    console.log(group.admin)
-    console.log(req.user._id)
+    const memberEmail = req.body.email;
     console.log(group.admin === req.user._id)
     try {
         if (group.admin.toString().trim() == req.user._id.toString().trim()) {
-            member= mongoose.Types.ObjectId(memberId)
+            member= await user.find({"email":memberEmail})
+            member = mongoose.Types.ObjectId(member._id)
             group.users = group.users.concat({User:member})
             group.save()
             res.status(200).send(group.users)
