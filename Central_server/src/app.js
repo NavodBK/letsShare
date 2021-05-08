@@ -20,6 +20,9 @@ app.use(express.static(static_path));
 //path to files
 const files = path.join(__dirname, '../storage')
 
+app.get('/',async(req,res)=>{
+    res.send('main server')
+})
 
 //Set 404
 app.get('*', (req, res) => {
