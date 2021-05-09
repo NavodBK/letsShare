@@ -17,11 +17,23 @@ const double signInAlign = 1;
 const Color selectedColor = Colors.white;
 const Color normalColor = Colors.black54;
 
+TextEditingController name = new TextEditingController();
+TextEditingController phone = new TextEditingController();
+TextEditingController email = new TextEditingController();
+TextEditingController pass = new TextEditingController();
+var _chosenValue;
+
 class _RegisterState extends State<Register> {
   register() async {
     try {
       try {
-        var response = await Dio().post(url + '/login', data: {});
+        var response = await Dio().post(url + '/register', data: {
+          "name": name.text,
+          "email": email.text,
+          "password": pass.text,
+          "hub": _chosenValue,
+          "phone": phone.text,
+        });
         loggedIn = true;
         token = response.data["token"];
         Navigator.push(
@@ -40,8 +52,6 @@ class _RegisterState extends State<Register> {
   Color healthyColor;
   Color unhealthyInColor;
 
-  var _chosenValue;
-
   @override
   void initState() {
     super.initState();
@@ -53,10 +63,6 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     //controllers
-    TextEditingController name = new TextEditingController();
-    TextEditingController phone = new TextEditingController();
-    TextEditingController email = new TextEditingController();
-    TextEditingController pass = new TextEditingController();
 
     return Scaffold(
         appBar: AppBar(),

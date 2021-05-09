@@ -22,6 +22,7 @@ class _HubSelectState extends State<HubSelect> {
     try {
       var response = await Dio().get('https://letsshare.tk');
       hubs = response;
+      print(response);
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(
