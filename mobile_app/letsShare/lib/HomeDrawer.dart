@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lets_share/PublicFiles.dart';
 
 import 'drawerButton.dart';
 import 'profile.dart';
+import 'PublicGroups.dart';
 
 class HomeDrawer extends StatelessWidget {
   @override
@@ -15,7 +17,9 @@ class HomeDrawer extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                drawerButton(context, Profile(), "Profile")
+                drawerButton(context, Profile(), "Profile"),
+                drawerButton(context, PublicFiles(), "Public Files"),
+                drawerButton(context, PublicGroups(), "Public Groups")
               ],
             ),
           ),

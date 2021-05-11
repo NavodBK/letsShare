@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lets_share/GroupTab.dart';
+import 'package:lets_share/PublicFiles.dart';
 import 'package:lets_share/login.dart';
 import 'package:dio/dio.dart';
-
 import 'globals.dart';
 import 'HomeDrawer.dart';
+import 'GroupFiles.dart';
 
 var groups = null;
 
@@ -25,19 +25,48 @@ class _HomeState extends State<Home> {
       dio.options.headers["authorization"] = "Bearer ${token}";
       var response = await dio.get(url + '/groups/my');
       print(response);
-      groups = response.data;
+      setState(() {
+        groups = response.data;
+      });
     } catch (e) {}
   }
 
   homeBodyRender() {
     if (groups == null) {
       print("empty");
-      return Text("Nothing to see here");
+      return Center(
+        child: Container(
+          padding: EdgeInsets.all(30),
+          margin: EdgeInsets.all(25),
+          child: Text("Nothing to see here"),
+        ),
+      );
     } else {
       return ListView.builder(
           itemBuilder: (ctx, index) {
-            return ListTile(
-              title: Text(index.toString()),
+            return Container(
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              decoration: new BoxDecoration(color: Colors.blue[100]),
+              child: ListTile(
+                onTap: () async {
+                  try {
+                    print(groups[index]["_id"]);
+                    Navigator.push(
+                      ctx,
+                      MaterialPageRoute(
+                        builder: (context) => GroupFiles(
+                            groupId: groups[index]["_id"],
+                            groupName: groups[index]["name"]),
+                      ),
+                    );
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                title: Text(groups[index]["name"]),
+                trailing: Icon(Icons.navigate_next_outlined),
+              ),
             );
           },
           itemCount: groups.length);
@@ -48,7 +77,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Groups")),
+        title: Center(child: Text("My Groups")),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

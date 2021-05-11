@@ -4,7 +4,7 @@ const {ipcRenderer}  =electron;
 var fileDownload = require('js-file-download');
 
 
-const url = 'http://127.0.0.1:3000';
+const url = 'http://192.168.1.3:3000';
 var token = ''
 
 document.addEventListener("DOMContentLoaded", function() {
