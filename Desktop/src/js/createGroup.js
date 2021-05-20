@@ -5,7 +5,7 @@ const {ipcRenderer}  =electron;
 const Dialogs = require('dialogs')
 const dialogs = Dialogs()
 
-const url = 'http://192.168.1.3:3000';
+var url = '';
 var token = ''
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   
   ipcRenderer.on('token:send', (event, res) => {
-      token=res;
+      token=res.token;
+      url = res.url;
   })
 
 const backBtn = document.getElementById('backBtn')

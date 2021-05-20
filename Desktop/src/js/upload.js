@@ -4,7 +4,7 @@ const {ipcRenderer}  =electron;
 var fileDownload = require('js-file-download');
 
 
-const url = 'http://192.168.1.3:3000';
+var url = '';
 var token = ''
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -12,48 +12,39 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 ipcRenderer.on('token:send', (event, res) => {
-    token=res;
+  token=res.token;
+  url = res.url;
 })
 
 
 
 function doupload() {
-    let data = document.getElementById("file").files[0];
-    let entry = document.getElementById("file").files[0];
-    console.log('doupload',entry,data)
-    fetch('uploads/' + encodeURIComponent(entry.name), {method:'PUT',body:data});
-    alert('your file has been uploaded');
-    // location.reload();
+  const formData = new FormData()
 
-    axios.post('http://localhost:3000/files/upload',{
-      "file":data,
-      "publicStat": false,
-      "categories" : ["image"],
-      "groups":[]
-      },{
-    headers: {
-      'Authorization': 'Bearer '+token
-    }
-    }).then(function (res){
-       console.log(res)
-    }).catch(function(err){
-       console.log(err)
-    })
 
-    axios.post(Helper.getUserAPI(), data, {
-      headers: headers
+  // add a binary file
+  const element = document.getElementById('file')
+  const file = element.files[0]
+  formData.append('file', file, file.name)
+  formData.append('publicStat','true')
+  formData.append('categoris','[]')
+  formData.append('groups','[]')
+ 
+    axios({
+      method: "post",
+      url: url+"/files/upload",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" ,'Authorization': 'Bearer '+token},
+    },)
+    .then(function (response) {
+      //handle success
+      console.log(response);
     })
-    .then((response) => {
-      dispatch({
-        type: FOUND_USER,
-        data: response.data[0]
-      })
-    })
-    .catch((error) => {
-      dispatch({
-        type: ERROR_FINDING_USER
-      })
-    })
+    .catch(function (response) {
+      //handle error
+      console.log(response);
+    });
+    
 };
 
 var uploadBtn = document.getElementById('uploadBtn') 

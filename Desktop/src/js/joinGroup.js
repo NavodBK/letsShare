@@ -5,7 +5,7 @@ const {ipcRenderer}  =electron;
 const Dialogs = require('dialogs')
 const dialogs = Dialogs()
 
-const url = 'http://192.168.1.3:3000';
+var url = '';
 var token = ''
 
 var mainContainer = document.getElementById('mainContainer')
@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", function() {
   
   ipcRenderer.on('token:send', (event, res) => {
       console.log(res)
-      token=res;
+      token=res.token;
+      url = res.url;
 
       axios.get(url+'/groups',{
         headers: {

@@ -4,7 +4,7 @@ const {ipcRenderer}  =electron;
 var fileDownload = require('js-file-download');
 
 
-const url = 'http://192.168.1.3:3000';
+var url = '';
 var token = ''
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 ipcRenderer.on('token:send', (event, res) => {
     console.log(res)
-    token=res;
+    token=res.token;
+    url = res.url;
     axios.get(url+'/files').then(function (response) {
         renderFiles(response.data,"Public",0)        
       })

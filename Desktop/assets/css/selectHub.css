@@ -1,0 +1,33 @@
+h1{
+    color: rgb(1, 1, 58);
+    margin-left: 50px;
+    font-size: 40px;
+}
+h3{
+    color: rgb(11, 11, 112);
+    margin-left: 50px;
+}
+
+#topSec{
+    margin-top: 100px;
+    display: flex;
+    flex-direction: row;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+}
+#logo{
+    height: 250px;
+}
+#hubs{
+    border-top: 1px solid blue;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+}
+
+.btnCustom{
+    margin: 25px;
+}

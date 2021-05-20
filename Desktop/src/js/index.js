@@ -3,7 +3,16 @@ const { Main } = require('electron');
 const electron = require('electron');
 const {ipcRenderer}  =electron;
 
-const url = 'http://192.168.1.3:3000';
+var url = '';
+
+document.addEventListener("DOMContentLoaded", function() {
+    ipcRenderer.send('token:get')
+  });
+
+ipcRenderer.on('token:send', (event, res) => {
+  url = res.url;
+})
+
 //login
 var submitBtn = document.getElementById('submit');
 submitBtn.addEventListener("click", function() {

@@ -4,6 +4,7 @@ const axios = require('axios');
 
 var token;
 var window;
+var hubUrlGlob;
 
 var groupIdForExchange;
 axiosConfig = {
@@ -25,7 +26,8 @@ function createWindow () {
   prepareWindow(win)
   win.maximize();
   win.show();
-  win.loadFile('src/index.html')
+  // win.loadFile('src/index.html')
+  win.loadFile('src/selectHub.html')
   window = this.win
 }
 
@@ -80,7 +82,7 @@ ipcMain.on('login:forgot',()=>{
 
 //send the token
 ipcMain.on('token:get', (event) => {
-  var res = token;
+  var res = {token:token,url:hubUrlGlob};
   event.sender.send('token:send', res)
 })
 
@@ -163,4 +165,10 @@ ipcMain.on('groups:join',async(eve,args)=>{
 //go back to files
 ipcMain.on('joinGroup:back',async(eve,args)=>{
   window.loadFile('src/files.html')
+})
+
+//getHubUrl
+ipcMain.on('hubUrl:set',async(eve,args)=>{
+  hubUrlGlob = 'http://'+ args;
+  window.loadFile('src/index.html')
 })

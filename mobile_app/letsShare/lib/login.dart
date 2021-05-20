@@ -19,10 +19,21 @@ class _loginState extends State<login> {
       token = response.data["token"];
       Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     } catch (e) {
-      print(e);
+      print("e = " + e);
+      if (e is DioError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Cannot connect to the hub please make sure you are connected to the hub wifi or select a differant hub'),
+          ),
+        );
+      }
       if (e.response.statusCode == 401) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Login failed')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login failed '),
+          ),
+        );
       }
     }
   }
