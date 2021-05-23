@@ -3,6 +3,8 @@ const electron = require('electron');
 const {ipcRenderer}  =electron;
 var fileDownload = require('js-file-download');
 
+const Dialogs = require('dialogs')
+const dialogs = Dialogs()
 
 var url = '';
 var token = ''
@@ -20,13 +22,18 @@ ipcRenderer.on('token:send', (event, res) => {
 
 function doupload() {
   const formData = new FormData()
+  var private;
+  var publicStatCheck = document.getElementById("Private");
+  if(publicStatCheck.checked == true){
+    private = true;
+  }
 
 
   // add a binary file
   const element = document.getElementById('file')
   const file = element.files[0]
   formData.append('file', file, file.name)
-  formData.append('publicStat','true')
+  formData.append('publicStat',private)
   formData.append('categoris','[]')
   formData.append('groups','[]')
  
@@ -50,4 +57,8 @@ function doupload() {
 var uploadBtn = document.getElementById('uploadBtn') 
 uploadBtn.addEventListener("click",function(){
     doupload();
+    dialogs.alert('Your file will be uploaded', ok => {
+      ipcRenderer.send('file:uploaded');
+    });
+    
 })

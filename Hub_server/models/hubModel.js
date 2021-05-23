@@ -10,12 +10,12 @@ const hubSchema = new mongoose.Schema({
         type : String,
         required :true,
     },
-    centralUrl:{
-        type : String,
+    centralHubId:{
+        type : mongoose.Schema.Types.ObjectId,
     },
     userCount:{
         type : Number,
-        required :true
+        required :false
     },
 
 })

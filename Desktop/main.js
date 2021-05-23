@@ -5,6 +5,7 @@ const axios = require('axios');
 var token;
 var window;
 var hubUrlGlob;
+var upWin;
 
 var groupIdForExchange;
 axiosConfig = {
@@ -35,7 +36,7 @@ function createWindow () {
 function prepareWindow(window){
   window.removeMenu();
 
-  window.webContents.openDevTools()
+  // window.webContents.openDevTools()
 }
 
 app.whenReady().then(createWindow)
@@ -120,7 +121,7 @@ ipcMain.on('fileUpload',async (eve,args)=>{
   upWin = new BrowserWindow({
     show: false,
     width: 800,
-    height: 600,
+    height: 300,
     webPreferences: {
       nodeIntegration: true
     }
@@ -130,6 +131,9 @@ ipcMain.on('fileUpload',async (eve,args)=>{
   upWin.loadFile('src/upload.html')
   upWindow = this.upWin
 
+})
+ipcMain.on('file:uploaded',async(eve,args)=>{
+  upWin.close()
 })
 
 
